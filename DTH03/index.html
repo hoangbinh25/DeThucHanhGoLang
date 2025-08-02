@@ -1,0 +1,83 @@
+<audio id="audio" controls>
+    <source src="/audio/jamesflora.wav" type="audio/wav">
+</audio>
+
+<div id="transcript" style="margin-top: 20px; font-size: 18px; line-height: 1.6;"></div>
+
+<style>
+    #transcript .highlight {
+        background-color: yellow;
+        font-weight: bold;
+    }
+
+    span {
+        cursor: pointer;
+    }
+</style>
+
+<script>
+    fetch("/audio/jamesflora.json")
+        .then(res => res.json())
+        .then(data => {
+            const words = data.word;
+            const sentences = data.sentence;
+
+            sentences.forEach((sentence, sIdx) => {
+                const p = document.createElement("p");
+                p.style.marginBottom = "8px";
+
+                const speaker = document.createElement("strong");
+                speaker.textContent = sentence.r + ": ";
+                p.appendChild(speaker);
+
+                const sentenceWords = words
+                    .map((w, i) => ({ w, i }))
+                    .filter(({ w }) => w[0] >= sentence.t0 && w[0] <= sentence.t1);
+
+                let hasWord = false;
+
+                sentenceWords.forEach(({ w, i }) => {
+                    const [startMs, duration, text] = w;
+                    const start = (startMs / 1000).toFixed(2);
+                    const end = ((startMs + duration) / 1000).toFixed(2);
+
+                    const span = document.createElement("span");
+                    span.textContent = text + " ";
+                    span.dataset.start = start;
+                    span.dataset.end = end;
+                    span.id = `word-${i}`;
+                    span.addEventListener("click", () => {
+                        audio.currentTime = parseFloat(start);
+                        audio.play();
+                    });
+
+                    p.appendChild(span);
+                    hasWord = true;
+                });
+
+                if (hasWord) transcript.appendChild(p);
+
+            });
+
+
+            // Highlight
+            audio.addEventListener("timeupdate", () => {
+                const currentTime = audio.currentTime;
+                words.forEach((word, i) => {
+                    if (!word || word.length < 2) return;
+                    const [startMs, duration] = word;
+                    const span = document.getElementById(`word-${i}`);
+                    if (!span) return;
+
+                    const start = startMs / 1000;
+                    const end = (startMs + duration) / 1000;
+                    if (currentTime >= start && currentTime < end) {
+                        span.classList.add("highlight");
+                    } else {
+                        span.classList.remove("highlight");
+                    }
+                });
+            });
+        })
+        .catch(err => console.error("❌ Lỗi khi load JSON:", err));
+</script>

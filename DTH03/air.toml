@@ -1,0 +1,8 @@
+# .air.toml
+[build]
+  cmd = "go run main.go"
+  bin = "main"
+  include_ext = ["go", "html", "json"]
+  exclude_dir = ["uploads"]
+  log = "stdout"
+  delay = 1000

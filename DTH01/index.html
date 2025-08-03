@@ -180,6 +180,14 @@
         .disconnected {
             background: #f44336;
         }
+
+        #aiBtn {
+            background: linear-gradient(45deg, #2196F3, #1976D2);
+        }
+
+        #aiBtn.active {
+            background: linear-gradient(45deg, #FF9800, #F57C00);
+        }
     </style>
 </head>
 
@@ -205,6 +213,7 @@
         <div class="game-board" id="gameBoard"></div>
 
         <button onclick="resetGame()" id="resetBtn">🔄 Chơi lại</button>
+        <button onclick="toggleAI()" id="aiBtn">🤖 Bật AI</button>
     </div>
 
     <script>
@@ -212,6 +221,7 @@
         let myPlayerID = 0;
         let playerCount = 0;
         let gameData = null;
+        let aiEnabled = false;
 
         // Khởi tạo WebSocket
         function initWebSocket() {
@@ -266,6 +276,30 @@
                 case 'error':
                     alert(message.data);
                     break;
+
+                case 'ai_toggled':
+                    if (message.data !== undefined) {
+                        aiEnabled = message.data;
+                        console.log('AI trạng thái:', aiEnabled ? 'BẬT' : 'TẮT');
+                        updateAIButton();
+                        if (aiEnabled && gameData && gameData.Turn === 2) {
+                            document.getElementById('gameStatus').textContent = '🤖 AI đang suy nghĩ...';
+                        }
+                    } else {
+                        console.error('Dữ liệu AI không hợp lệ:', message);
+                    }
+                    break;
+            }
+        }
+
+        function updateAIButton() {
+            const aiBtn = document.getElementById('aiBtn');
+            if (aiEnabled) {
+                aiBtn.textContent = '🤖 Tắt AI';
+                aiBtn.classList.add('active');
+            } else {
+                aiBtn.textContent = '🤖 Bật AI';
+                aiBtn.classList.remove('active');
             }
         }
 
@@ -379,6 +413,39 @@
                     statusEl.className = 'status current-turn';
                 }
             }
+            const aiBtn = document.getElementById('aiBtn');
+            if (myPlayerID === 1) {
+                aiBtn.style.display = 'inline-block';
+            } else {
+                aiBtn.style.display = 'none';
+            }
+        }
+
+        function toggleAI() {
+            if (playerCount < 2) {
+                alert('Vui lòng đợi đủ 2 người chơi!');
+                return;
+            }
+
+            if (myPlayerID !== 1) {
+                alert('Chỉ người chơi 1 được điều khiển AI!');
+                return;
+            }
+
+            aiEnabled = !aiEnabled;
+            updateAIButton();
+
+            if (!ws || ws.readyState !== WebSocket.OPEN) {
+                alert('Không có kết nối!');
+                aiEnabled = !aiEnabled;
+                updateAIButton();
+                return;
+            }
+
+            ws.send(JSON.stringify({
+                type: 'toggle_ai',
+                data: aiEnabled
+            }));
         }
 
         // Khởi tạo game

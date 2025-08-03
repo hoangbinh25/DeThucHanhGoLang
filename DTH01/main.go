@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/gorilla/websocket"
 )
@@ -14,6 +15,7 @@ type Game struct {
 	Players  []*websocket.Conn // Danh sách 2 người chơi
 	Winner   int               // 0=chưa thắng, 1=X thắng, 2=O thắng
 	GameOver bool              // Game kết thúc chưa
+	AIPlayer bool              // Bật tắt chế độ chơi AI
 }
 
 type Message struct {
@@ -22,8 +24,9 @@ type Message struct {
 }
 
 var game = &Game{
-	Turn:    1,
-	Players: make([]*websocket.Conn, 0, 2),
+	Turn:     1,
+	Players:  make([]*websocket.Conn, 0, 2),
+	AIPlayer: false,
 }
 
 var upgrader = websocket.Upgrader{
@@ -74,6 +77,30 @@ func handleWebSocket(w http.ResponseWriter, r *http.Request) {
 			handleMove(conn, msg.Data)
 		case "reset":
 			resetGame()
+		case "toggle_ai":
+			// Chỉ cho phép người chơi 1 (X) điều khiển AI
+			if findPlayerID(conn) == 1 {
+				if enabled, ok := msg.Data.(bool); ok {
+					game.AIPlayer = enabled
+					broadcastMessage("ai_toggled", game.AIPlayer)
+					log.Printf("AI đã được %s bởi người chơi 1", map[bool]string{true: "bật", false: "tắt"}[game.AIPlayer])
+
+					// Nếu AI được bật và đến lượt O, xử lý ngay
+					if game.AIPlayer && game.Turn == 2 && !game.GameOver {
+						// time.Sleep(500 * time.Millisecond) // Thêm độ trễ tự nhiên
+						row, col := findBestMove()
+						game.Board[row][col] = 2
+
+						if checkWin(row, col, 2) {
+							game.Winner = 2
+							game.GameOver = true
+						} else {
+							game.Turn = 1
+						}
+						broadcastMessage("game_state", game)
+					}
+				}
+			}
 		}
 	}
 }
@@ -116,6 +143,22 @@ func handleMove(conn *websocket.Conn, data interface{}) {
 		// Chuyển lượt
 		if game.Turn == 1 {
 			game.Turn = 2
+		} else {
+			game.Turn = 1
+		}
+	}
+
+	if !game.GameOver && game.AIPlayer && game.Turn == 2 {
+		// AI đánh
+		time.Sleep(500 * time.Millisecond)
+		row, col := findBestMove()
+		game.Board[row][col] = 2
+		fmt.Printf("AI đã đánh ô (%d, %d)\n", row, col)
+
+		if checkWin(row, col, 2) {
+			game.Winner = 2
+			game.GameOver = true
+			fmt.Println("AI thắng")
 		} else {
 			game.Turn = 1
 		}
@@ -169,6 +212,134 @@ func checkWin(row, col, player int) bool {
 	return false
 }
 
+func findBestMove() (int, int) {
+	// 2 là O: đại diện cho AI nếu bật
+	if row, col := findWinningMove(2); row != -1 {
+		return row, col
+	}
+
+	// 1 là X: đại diện cho người chơi
+	if row, col := findWinningMove(1); row != -1 {
+		return row, col
+	}
+
+	if row, col := findThreeInARow(1); row != -1 {
+		return row, col
+	}
+
+	if row, col := findThreeInARow(2); row != -1 {
+		return row, col
+	}
+
+	if game.Board[7][7] == 0 {
+		return 7, 7
+	}
+
+	return findStragegicMove()
+}
+
+func findWinningMove(player int) (int, int) {
+	for row := 0; row < 15; row++ {
+		for col := 0; col < 15; col++ {
+			if game.Board[row][col] != 0 {
+				continue
+			}
+			game.Board[row][col] = player
+			if checkWin(row, col, player) {
+				game.Board[row][col] = 0
+				return row, col
+			}
+			game.Board[row][col] = 0
+		}
+	}
+	return -1, -1
+}
+
+func findStragegicMove() (int, int) {
+	for row := 0; row < 15; row++ {
+		for col := 0; col < 15; col++ {
+			if game.Board[row][col] == 0 && hasNeighbor(row, col, 1) {
+				return row, col
+			}
+		}
+	}
+	for row := 0; row < 15; row++ {
+		for col := 0; col < 15; col++ {
+			if game.Board[row][col] == 0 {
+				return row, col
+			}
+		}
+	}
+
+	return -1, -1
+}
+
+func findThreeInARow(player int) (int, int) {
+	directions := [][2]int{{0, 1}, {1, 0}, {1, 1}, {1, -1}}
+
+	for row := 0; row < 15; row++ {
+		for col := 0; col < 15; col++ {
+			if game.Board[row][col] != 0 {
+				continue
+			}
+
+			game.Board[row][col] = player
+
+			// Kiểm tra 4 hướng
+			for _, dir := range directions {
+				dx, dy := dir[0], dir[1]
+				count := 1
+
+				for i := 1; i < 3; i++ {
+					r, c := row+i*dx, col+i*dy
+					if r < 0 || r >= 15 || c < 0 || c >= 15 || game.Board[r][c] != player {
+						break
+					}
+					count++
+				}
+				for i := 1; i < 3; i++ {
+					r, c := row-i*dx, col-i*dy
+					if r < 0 || r >= 15 || c < 0 || c >= 15 || game.Board[r][c] != player {
+						break
+					}
+					count++
+				}
+				if count >= 3 {
+					game.Board[row][col] = 0 // Hoàn tác
+					return row, col
+				}
+			}
+			game.Board[row][col] = 0
+		}
+	}
+	return -1, -1
+}
+
+func hasNeighbor(row, col, distance int) bool {
+	for r := max(0, row-distance); r <= min(14, row+distance); r++ {
+		for c := max(0, col-distance); c <= min(14, col+distance); c++ {
+			if game.Board[r][c] != 0 {
+				return true
+			}
+		}
+	}
+	return false
+}
+
+func max(a, b int) int {
+	if a > b {
+		return a
+	}
+	return b
+}
+
+func min(a, b int) int {
+	if a < b {
+		return a
+	}
+	return b
+}
+
 func sendMessage(conn *websocket.Conn, msgType string, data interface{}) {
 	msg := Message{Type: msgType, Data: data}
 	conn.WriteJSON(msg)
@@ -217,6 +388,11 @@ func resetGame() {
 	fmt.Println("Game đã được reset")
 }
 
+func handleToggleAI(w http.ResponseWriter, r *http.Request) {
+	game.AIPlayer = !game.AIPlayer
+	broadcastMessage("ai_toggled", game.AIPlayer)
+}
+
 // serve file
 func serveHTML(w http.ResponseWriter, r *http.Request) {
 	http.ServeFile(w, r, "index.html")
@@ -228,6 +404,7 @@ func main() {
 	// routes
 	http.HandleFunc("/", serveHTML)
 	http.HandleFunc("/ws", handleWebSocket)
+	http.HandleFunc("/toggle-ai", handleToggleAI)
 
 	fmt.Println("Server running on http://localhost:8080")
 	fmt.Println("Open 2 browser tabs to play!")

@@ -2,6 +2,8 @@
 
 Ứng dụng game cờ caro chơi trực tuyến 2 người với giao diện web đẹp mắt và kết nối WebSocket real-time.
 
+Mọi người có thể vào link youtobe dưới đây để xem hướng dẫn: https://www.youtube.com/watch?v=zBoqDUxK9Hs
+
 ## 📁 Cấu trúc thư mục
 
 ```bash

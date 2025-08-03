@@ -24,34 +24,35 @@ Mọi người có thể vào link youtobe dưới đây để xem hướng dẫ
 ✅ Game logic hoàn chỉnh: Kiểm tra thắng thua, chuyển lượt, reset game
 
 ## 🚀 Cách chạy ứng dụng
+### Clone project từ github về máy của bạn
+    
+Bước 1: Mở terminal (cmd, powershell, git Bash, ...)
 
-### 1. Cài đặt Go và Iris
+Bước 2: Dán câu lệnh dưới vào terminal
+```bash
+git clone https://github.com/hoangbinh25/DeThucHanhGoLang.git
+```
+
+<img width="777" height="413" alt="image" src="https://github.com/user-attachments/assets/57390813-22d6-4bfa-957d-3c66bf4b0b84"/>
+<br>
+
+Bước 3: Gõ: 
+```bash
+cd DeThucHanhGoLang/
+```
+sau đó Gõ tiếp 
+```bash
+code . 
+```
+để mở nhanh IDE hoặc Code Editor(VS Code) mà bạn sử dụng hoặc mở IDE để open folder vừa clone về.
+
+### 1. Cài đặt Go và gorilla/websocket
 
 Đảm bảo bạn đã cài [Go](https://go.dev/dl/) (phiên bản >= 1.16)
-
 ```bash
-go install github.com/kataras/iris/v12@latest
-```
-
-# Cách 1: Clone project có sẵn
-
-```bash
-# Nếu bạn có sẵn các file go.mod và go.sum
-go mod download
-```
-
-# Cách 2: Tạo project từ đầu
-
-```bash
-# Khởi tạo Go module
-go mod init caro-game
-
 # Cài đặt Gorilla WebSocket
 go get github.com/gorilla/websocket
-
-# Go sẽ tự tạo go.mod và go.sum
 ```
-
 ### 2. Chạy chương trình
 
 Mở terminal tại thư mục DTH01 và chạy:

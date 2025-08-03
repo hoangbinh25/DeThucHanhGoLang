@@ -16,7 +16,9 @@
 🎮 Tính năng chính
 
 ✅ Real-time multiplayer: Hai người chơi cùng lúc qua WebSocket
+
 ✅ Auto-reconnect: Tự động kết nối lại khi mất kết nối
+
 ✅ Game logic hoàn chỉnh: Kiểm tra thắng thua, chuyển lượt, reset game
 
 ## 🚀 Cách chạy ứng dụng
@@ -51,23 +53,33 @@ go get github.com/gorilla/websocket
 ### 2. Chạy chương trình
 
 Mở terminal tại thư mục DTH01 và chạy:
+```bash
 go run main.go
+```
 Mặc định server sẽ chạy tại: http://localhost:8080
 
 ### 3. Bắt đầu chơi
 
 Mở 2 tab browser tại: http://localhost:8080
+
 Tab 1 sẽ là Người chơi X (đi trước)
+
 Tab 2 sẽ là Người chơi O (đi sau)
+
 Click vào ô trống để đánh quân
+
 Người thắng: Tạo được 5 quân liên tiếp (ngang/dọc/chéo)
 
 🎯 Luật chơi
 
 Bàn cờ: 15x15 ô vuông
+
 Mục tiêu: Tạo ra 5 quân liên tiếp theo hàng ngang, dọc hoặc chéo
+
 Lượt chơi: X đi trước, O đi sau, luân phiên
+
 Thắng: Người đầu tiên có 5 quân liên tiếp
+
 Reset: Click nút "🔄 Chơi lại" để bắt đầu ván mới
 
 # Bài 03: Ứng dụng Web Hiển Thị Transcript Đồng Bộ Với Âm Thanh

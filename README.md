@@ -1,8 +1,8 @@
 # Bài 01 : Ứng dụng chơi cờ caro với máy tính hoặc 2 người chơi A và B với nhau
 
-Ứng dụng game cờ caro chơi trực tuyến 2 người với giao diện web đẹp mắt và kết nối WebSocket real-time.
+Ứng dụng game cờ caro chơi trực tuyến 2 người và với AI với giao diện web đẹp mắt và kết nối WebSocket real-time.
 
-Mọi người có thể vào link youtobe dưới đây để xem hướng dẫn: https://www.youtube.com/watch?v=zBoqDUxK9Hs
+Mọi người có thể vào link youtobe dưới đây để xem hướng dẫn: https://www.youtube.com/watch?v=zBoqDUxK9Hs  hoặc đọc phần hướng dẫn ở dưới
 
 ## 📁 Cấu trúc thư mục
 

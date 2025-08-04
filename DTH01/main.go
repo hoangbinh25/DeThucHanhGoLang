@@ -132,6 +132,8 @@ func handleMove(conn *websocket.Conn, data interface{}) {
 	// Đánh quân
 	game.Board[row][col] = playerID
 	fmt.Printf("Người chơi %d đánh ô (%d,%d)\n", playerID, row, col)
+	moveMessage := fmt.Sprintf("Người chơi %d đánh ô (%d,%d)\n", playerID, row, col)
+	broadcastMessage("move_notifications", moveMessage)
 
 	// Kiểm tra thắng
 	if checkWin(row, col, playerID) {
@@ -153,7 +155,8 @@ func handleMove(conn *websocket.Conn, data interface{}) {
 		row, col := findBestMove()
 		game.Board[row][col] = 2
 		fmt.Printf("AI đã đánh ô (%d, %d)\n", row, col)
-
+		aiMessage := fmt.Sprintf("AI đã đánh ô (%d,%d)\n", row, col)
+		broadcastMessage("move_notifications", aiMessage)
 		if checkWin(row, col, 2) {
 			game.Winner = 2
 			game.GameOver = true

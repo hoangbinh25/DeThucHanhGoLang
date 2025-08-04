@@ -84,37 +84,43 @@ INSERT INTO Word(text, language_id, phonetic) VALUES
 INSERT INTO Word(text, language_id, phonetic) VALUES 
 ('winter', 2, '/ˈwɪn.tər/'),
 ('crowded', 2, '/ˈwɪn.tər/'),
-('east', 2, '/iːst/');
+('east', 2, '/iːst/'),
+('freeze', 2, '/friːz/');
 
 -- Tiếng Nhật
 INSERT INTO Word (text, language_id, phonetic) VALUES
 ('冬', 3, 'ふゆ'),  -- mùa đông
 ('賑やか', 3, 'にぎやか'), -- đông đúc
-('東', 3, 'ひがし'); -- phía đông
+('東', 3, 'ひがし'), -- phía đông
+('凍る', 3, 'こおる'); -- đông cứng, đông đá
 
 -- Nghĩa
 INSERT INTO Meaning (word_id, type_id, define) VALUES
 (1, 1, 'mùa đông, thời kỳ lạnh nhất trong năm'),
 (1, 2, 'đông đúc, nhiều người tụ tập'),
-(1, 1, 'phía đông, hướng mặt trời mọc');
+(1, 1, 'phía đông, hướng mặt trời mọc'),
+(1, 3, 'đông lại, đông thành đá do lạnh');
 
 --  Dịch Tiếng Anh
 INSERT INTO Translation (meaning_id, target_language_id, translate_text, translate_define) VALUES
 (1, 2, 'winter', 'the coldest season of the year'),
 (2, 2, 'crowded', 'full of people'),
-(3, 2, 'east', 'the direction where the sun rises');
+(3, 2, 'east', 'the direction where the sun rises'),
+(4, 2, 'freeze', 'to become hard due to cold');
 
 --  Dịch Tiếng Nhật
 INSERT INTO Translation (meaning_id, target_language_id, translate_text, translate_define) VALUES
 (1, 3, '冬', '一年で最も寒い季節'),  -- mùa lạnh nhất trong năm
 (2, 3, '賑やか', '人がたくさん集まっている'), -- có nhiều người tụ tập
-(3, 3, '東', '太陽が昇る方向'); -- hướng mặt trời mọc
+(3, 3, '東', '太陽が昇る方向'), -- hướng mặt trời mọc
+(4, 3, '凍る', '寒さで固くなる');
 
 -- Ví dụ  
 INSERT INTO Example (meaning_id, example_text) VALUES
 (1, 'Mùa đông ở Hà Nội rất lạnh'),
 (2, 'Phố cổ Hà Nội đông đúc vào cuối tuần'),
-(3, 'Mặt trời mọc ở hướng đông');
+(3, 'Mặt trời mọc ở hướng đông'),
+(4, 'Nước đông lại thành đá khi nhiệt độ xuống thấp');
  
 INSERT INTO ExampleTranslate (example_id, target_language_id, translated_example) VALUES
 (1, 2, 'Winter in Hanoi is very cold'),
@@ -122,7 +128,9 @@ INSERT INTO ExampleTranslate (example_id, target_language_id, translated_example
 (2, 2, 'The Hanoi Old Quarter is crowded on weekends'),
 (2, 3, '週末のハノイ旧市街はにぎやかです'),
 (3, 2, 'The sun rises in the east'),
-(3, 3, '太陽は東から昇ります');
+(3, 3, '太陽は東から昇ります'),
+(4, 2, 'Water freezes into ice when the temperature drops'),
+(4, 3, '気温が下がると水が凍ります');
 
 -- Lấy tất cả các nghĩa của từ 'đông' và bản dịch 
 SELECT 

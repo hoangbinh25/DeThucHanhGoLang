@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"time"
 
 	"github.com/gorilla/websocket"
 )
@@ -150,7 +149,7 @@ func handleMove(conn *websocket.Conn, data interface{}) {
 
 	if !game.GameOver && game.AIPlayer && game.Turn == 2 {
 		// AI đánh
-		time.Sleep(500 * time.Millisecond)
+		// time.Sleep(500 * time.Millisecond)
 		row, col := findBestMove()
 		game.Board[row][col] = 2
 		fmt.Printf("AI đã đánh ô (%d, %d)\n", row, col)

@@ -85,6 +85,11 @@ Thắng: Người đầu tiên có 5 quân liên tiếp
 
 Reset: Click nút "🔄 Chơi lại" để bắt đầu ván mới
 
+# Bài 02: CSDL quan hệ cho ứng dụng tra từ điển tiếng Việt sang 2 ngôn ngữ khác: Anh, Nhật
+
+<img width="681" height="745" alt="image" src="https://github.com/user-attachments/assets/a1697b2b-9f59-4018-aca4-93c5ab6acaf7" />
+
+
 # Bài 03: Ứng dụng Web Hiển Thị Transcript Đồng Bộ Với Âm Thanh
 
 Ứng dụng này cho phép người dùng **nghe audio và xem transcript được đồng bộ theo thời gian thực**, với khả năng **click vào từng từ để phát lại audio tại thời điểm tương ứng**.

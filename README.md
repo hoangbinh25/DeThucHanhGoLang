@@ -8,8 +8,8 @@ Mọi người có thể vào link youtobe dưới đây để xem hướng dẫ
 
 ```bash
     DTH01/
-    ├── main.go # File backend chính viết bằng Go (Iris framework)
-    ├── index.html # Giao diện web hiển thị audio + transcript
+    ├── main.go # File backend chính viết bằng Go
+    ├── index.html # Giao diện web hiển thị
     ├── go.mod  # Quản lý các go module dependencies
     ├── go.sum  # Check sum file cho dependencies
 

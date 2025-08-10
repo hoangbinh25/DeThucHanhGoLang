@@ -12,12 +12,16 @@ Mọi người có thể vào link youtobe dưới đây để xem hướng dẫ
     ├── index.html # Giao diện web hiển thị
     ├── go.mod  # Quản lý các go module dependencies
     ├── go.sum  # Check sum file cho dependencies
+    ├── Dockerfile  # Đóng gói ứng dụng với Docker
+    ├── README.md  # Tài liệu hướng dẫn
 
 ```
 
 🎮 Tính năng chính
 
 ✅ Real-time multiplayer: Hai người chơi cùng lúc qua WebSocket
+
+✅ Chơi với AI: Người chơi 1 có thể bật/tắt chế độ AI.
 
 ✅ Auto-reconnect: Tự động kết nối lại khi mất kết nối
 

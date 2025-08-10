@@ -1,6 +1,6 @@
 module github.com/hoangbinh25/DTH01
 
-go 1.23.1
+go 1.21
 
 require github.com/gorilla/websocket v1.5.1
 
